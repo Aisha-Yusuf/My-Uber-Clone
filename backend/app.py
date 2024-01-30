@@ -1,18 +1,24 @@
-from flask import Flask, make_response, jsonify, request
+from flask import Flask, make_response, jsonify, request, Response
 from flask_migrate import Migrate
 from flask_restful import Api, Resource, reqparse
 from flask_marshmallow import Marshmallow
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from flask_cors import CORS
+from flask_bcrypt import Bcrypt
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+
 from models import db, User, Driver, Customer, Ride, Review
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///uber.db'  
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['JWT_SECRET_KEY'] = '987654'
 db.init_app(app)
 migrate = Migrate(app, db, render_as_batch=True)
 api = Api(app)
 ma = Marshmallow(app)
+bcrypt = Bcrypt(app)
+jwt = JWTManager(app)
 ma.init_app(app)
 CORS(app)
 
@@ -49,6 +55,56 @@ class ReviewSchema(SQLAlchemyAutoSchema):
         model = Review
 
 Review_schema = ReviewSchema()
+
+class Registration(Resource):
+    post_args = reqparse.RequestParser(bundle_errors=True)
+    post_args.add_argument('email', type=str, help='Email of the user', required=True)
+    post_args.add_argument('password', type=str, help='Password of the user', required=True)
+
+    def post(self):
+        args = self.post_args.parse_args()
+
+        existing_user = User.query.filter_by(email=args['email']).first()
+        if existing_user:
+            return {"Error": "User with this email already exists"}, 400
+
+        
+        new_user = User(email=args['email'])
+        new_user.set_password(args['password'])
+
+        
+        db.session.add(new_user)
+        db.session.commit()
+
+        return {"message": "User registered successfully"}, 201
+
+api.add_resource(Registration, '/register')
+
+class Login(Resource):
+    post_args = reqparse.RequestParser(bundle_errors=True)
+    post_args.add_argument('email', type=str, help='Email of the user', required=True)
+    post_args.add_argument('password', type=str, help='Password of the user', required=True)
+
+    def post(self):
+        args = self.post_args.parse_args()
+
+        user = User.query.filter_by(email=args['email']).first()
+
+        if user and user.check_password(args['password']):
+            access_token = create_access_token(identity=user.id)
+            return {'access_token': access_token}, 200
+        else:
+            return {'Error': 'Invalid credentials'}, 401
+
+api.add_resource(Login, '/login')
+
+class ProtectedResource(Resource):
+    @jwt_required()
+    def get(self):
+        current_user_id = get_jwt_identity()
+        return {'message': f'You are authenticated as user {current_user_id}'}, 200
+
+api.add_resource(ProtectedResource, '/protected')
 
 class Customers(Resource):
     def get(self):
@@ -119,7 +175,10 @@ class Drivers_by_id(Resource):
         driver_data["rides"] = rides_data
         driver_data["customers"] = customers_data
 
+        # Return the JSON data directly
         return jsonify(driver_data), 200
+
+
 
     def delete(self, id):
         driver = Driver.query.filter_by(id=id).first()
