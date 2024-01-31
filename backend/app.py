@@ -54,7 +54,9 @@ class ReviewSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = Review
 
-Review_schema = ReviewSchema()
+review_schema = ReviewSchema()
+
+
 
 class Registration(Resource):
     post_args = reqparse.RequestParser(bundle_errors=True)
@@ -68,11 +70,9 @@ class Registration(Resource):
         if existing_user:
             return {"Error": "User with this email already exists"}, 400
 
-        
         new_user = User(email=args['email'])
         new_user.set_password(args['password'])
 
-        
         db.session.add(new_user)
         db.session.commit()
 
@@ -97,6 +97,7 @@ class Login(Resource):
             return {'Error': 'Invalid credentials'}, 401
 
 api.add_resource(Login, '/login')
+
 
 class ProtectedResource(Resource):
     @jwt_required()
@@ -176,7 +177,9 @@ class Drivers_by_id(Resource):
         driver_data["customers"] = customers_data
 
         # Return the JSON data directly
-        return jsonify(driver_data), 200
+
+        res = make_response(jsonify(driver_data), 200)
+        return res
 
 
 
@@ -212,6 +215,52 @@ class Drivers_by_id(Resource):
         return {"message": "Driver created successfully"}, 201
 
 api.add_resource(Drivers_by_id, '/driver/<int:id>')
+
+class Reviews(Resource):
+    def get(self):
+        review = Review.query.all()
+        res = review_schema.dump(review,many = True)
+
+        response = make_response(
+            jsonify(res),
+            200
+        )
+
+        return response
+api.add_resource(Reviews, '/review')
+
+class ReviewResources(Resource):
+    post_args = reqparse.RequestParser(bundle_errors=True)
+    post_args.add_argument('comment', type=str, help='Comment for the review', required=True)
+    post_args.add_argument('customer_id', type=int, help='ID of the customer leaving the review', required=True)
+    post_args.add_argument('driver_id', type=int, help='ID of the driver being reviewed', required=True)
+    post_args.add_argument('rating', type=int, help='Rating for the review (e.g., 1 to 5)', required=True)
+
+    def post(self):
+        args = self.post_args.parse_args()
+
+        # Check if the customer and driver exist
+        customer = Customer.query.get(args['customer_id'])
+        driver = Driver.query.get(args['driver_id'])
+
+        if not (customer and driver):
+            return {'Error': 'Customer or driver not found'}, 404
+
+        new_review = Review(
+            comment=args['comment'],
+            customer_id=args['customer_id'],
+            driver_id=args['driver_id'],
+            rating=args['rating']
+        )
+
+        db.session.add(new_review)
+        db.session.commit()
+
+        return {"message": "Review submitted successfully"}, 201
+
+api.add_resource(ReviewResources, '/review')
+
+
 
 
 
