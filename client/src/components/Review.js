@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 
 function Review() {
   const [comment, setComment] = useState('');
-  const [customerId, setCustomerId] = useState(1);  // Assuming a default customer ID
-  const [driverId, setDriverId] = useState(1);    // Assuming a default driver ID
-  const [rating, setRating] = useState(5);       // Assuming a default rating
+  const [customerId, setCustomerId] = useState(1);  
+  const [driverId, setDriverId] = useState(1);   
+  const [rating, setRating] = useState(5);       
 
   const handleSubmit = async () => {
     try {
@@ -23,7 +23,7 @@ function Review() {
 
       if (response.ok) {
         console.log('Review submitted successfully');
-        // You may want to reset the form or take other actions upon successful submission
+       
       } else {
         console.error('Failed to submit review');
       }

@@ -1,15 +1,11 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
-function Register() {
+function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const response = await fetch('http://127.0.0.1:5555/register', {
+  const handleLogin = async () => {
+    const response = await fetch('http://127.0.0.1:5555/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -20,19 +16,19 @@ function Register() {
     const data = await response.json();
 
     if (response.ok) {
-      navigate('/');
+      localStorage.setItem('access_token', data.access_token);
     } else {
       console.error(data.Error);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <div>
       <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" />
       <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Password" />
-      <button type="submit">Register</button>
-    </form>
+      <button onClick={handleLogin}>Login</button>
+    </div>
   );
 }
 
-export default Register;
+export default Login;

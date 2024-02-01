@@ -1,100 +1,73 @@
 import React, { useState } from 'react';
-import Review from './Review';
-
 
 function Booking() {
-  const [rideId, setRideId] = useState('');
+  const [ride, setRide] = useState(null);
+  const [price, setPrice] = useState(null);
+  const [rating, setRating] = useState(null);
+  const [comment, setComment] = useState('');
 
   const handleBooking = async () => {
-    try {
-      const response = await fetch('http://localhost:5555/book', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-        },
-        body: JSON.stringify({ /* Add necessary data for booking */ })
-      });
+    const location = prompt('Where are you?');
+    const destination = prompt('Where do you want to go?');
 
-      if (response.ok) {
-        console.log('Ride booked successfully');
-        // Set the rideId in state or handle it as needed
-        // setRideId(/* extract rideId from the response if applicable */);
-      } else {
-        console.error('Failed to book ride');
-      }
-    } catch (error) {
-      console.error('Error during booking:', error);
-    }
+
+    const response = await new Promise(resolve => setTimeout(() => resolve({
+      id: Date.now(),
+      location,
+      destination,
+      price: Math.floor(Math.random() * 100) 
+    }), 2000));
+
+    setRide(response);
+    setPrice(response.price);
+
+    alert(`Ride booked! The price is ${response.price}`);
   };
 
   const handleCancel = async () => {
-    try {
-      const response = await fetch(`http://localhost:5555/cancel/${rideId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-        }
-      });
 
-      if (response.ok) {
-        console.log('Ride cancelled successfully');
-      } else {
-        console.error('Failed to cancel ride');
-      }
-    } catch (error) {
-      console.error('Error during cancellation:', error);
-    }
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
+    setRide(null);
+    setPrice(null);
+
+    alert('Ride cancelled successfully');
   };
 
   const handlePayment = async () => {
-    try {
-      const response = await fetch(`http://localhost:5555/pay/${rideId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-        }
-      });
 
-      if (response.ok) {
-        console.log('Payment processed successfully');
-      } else {
-        console.error('Failed to process payment');
-      }
-    } catch (error) {
-      console.error('Error during payment processing:', error);
-    }
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
+    alert('Payment processed successfully');
   };
 
   const handleRating = async () => {
-    try {
-      const response = await fetch(`http://localhost:5555/rate/${rideId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-        },
-        body: JSON.stringify({ rating: 5 }) // Replace with actual rating data
-      });
+    const rating = prompt('Please enter a rating (1-5)');
+    const comment = prompt('Please enter a comment');
 
-      if (response.ok) {
-        console.log('Rating submitted successfully');
-      } else {
-        console.error('Failed to submit rating');
-      }
-    } catch (error) {
-      console.error('Error during rating submission:', error);
-    }
+
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
+    setRating(rating);
+    setComment(comment);
+
+    alert('Your rating and comment have been submitted successfully');
   };
 
   return (
     <div>
-      <button onClick={handleBooking}>Book a Ride</button>
-      <button onClick={handleCancel}>Cancel Ride</button>
-      <button onClick={handlePayment}>Pay for Ride</button>
-      <button onClick={handleRating}>Rate Driver</button>
+      {!ride ? (
+        <button onClick={handleBooking}>Book a Ride</button>
+      ) : (
+        <>
+          <button onClick={handleCancel}>Cancel Ride</button>
+          <button onClick={handlePayment}>Pay for Ride</button>
+          <button onClick={handleRating}>Rate Driver</button>
+          <p>Price: {price}</p>
+          {rating && <p>Rating: {rating}</p>}
+          {comment && <p>Comment: {comment}</p>}
+        </>
+      )}
     </div>
   );
 }
