@@ -176,7 +176,6 @@ class Drivers_by_id(Resource):
         driver_data["rides"] = rides_data
         driver_data["customers"] = customers_data
 
-        # Return the JSON data directly
 
         res = make_response(jsonify(driver_data), 200)
         return res
@@ -189,10 +188,10 @@ class Drivers_by_id(Resource):
         if driver is None:
             return {"Error": "Driver not found"}, 404
 
-        # Delete associated rides
+    
         Ride.query.filter_by(driver_id=id).delete()
 
-        # Delete the driver
+        
         db.session.delete(driver)
         db.session.commit()
 
@@ -239,7 +238,7 @@ class ReviewResources(Resource):
     def post(self):
         args = self.post_args.parse_args()
 
-        # Check if the customer and driver exist
+        
         customer = Customer.query.get(args['customer_id'])
         driver = Driver.query.get(args['driver_id'])
 
