@@ -1,0 +1,31 @@
+.driver-container {
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .driver-item {
+    margin-bottom: 10px;
+  }
+  
+  .driver-item label {
+    font-weight: bold;
+    margin-right: 5px;
+  }
+  
+  .driver-item span {
+    color: #333;
+  }
+  
+  .loading-message {
+    font-style: italic;
+    color: #666;
+  }
+  
+  .error-message {
+    color: red;
+  }
+  
