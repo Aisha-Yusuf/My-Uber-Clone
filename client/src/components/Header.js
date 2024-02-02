@@ -5,7 +5,7 @@ function Header({ username }) {
   return (
     <header className="App-header">
       <img src={logo} alt="Logo" className="App-logo"/>
-      <h1>Welcome, {username}</h1>
+      <h1>Welcome to Uber-taxified !!!</h1>
     </header>
   );
 }

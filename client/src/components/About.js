@@ -1,13 +1,19 @@
 import React from 'react';
+import './About.css';
 
 function About() {
   return (
     <div>
       <h2>About Us</h2>
-      <p>
-        Welcome to our application! This is the About page, where you can provide information
-        about your project, team, or anything else you find relevant.
-      </p>
+      <h1>
+        Welcome to Uber taxified! 
+        <p>Classy, comfortable rides.</p>
+
+        <p>Great prices and discounts.</p>
+
+        <p>Your Safety is guaranteed.</p>
+        <p>Get 100% value for your money !!!</p>
+      </h1>
       
     </div>
   );

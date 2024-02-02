@@ -10,6 +10,10 @@ function Booking() {
     const location = prompt('Where are you?');
     const destination = prompt('Where do you want to go?');
 
+    if (!location || !destination) {
+      alert('Please provide both location and destination.');
+      return;
+    }
 
     const response = await new Promise(resolve => setTimeout(() => resolve({
       id: Date.now(),
@@ -25,6 +29,10 @@ function Booking() {
   };
 
   const handleCancel = async () => {
+    if (!ride) {
+      alert('No ride to cancel.');
+      return;
+    }
 
     await new Promise(resolve => setTimeout(resolve, 2000));
 
@@ -35,6 +43,10 @@ function Booking() {
   };
 
   const handlePayment = async () => {
+    if (!ride) {
+      alert('No ride to pay for.');
+      return;
+    }
 
     await new Promise(resolve => setTimeout(resolve, 2000));
 
@@ -45,6 +57,10 @@ function Booking() {
     const rating = prompt('Please enter a rating (1-5)');
     const comment = prompt('Please enter a comment');
 
+    if (!rating || !comment) {
+      alert('Please provide both rating and comment.');
+      return;
+    }
 
     await new Promise(resolve => setTimeout(resolve, 2000));
 
