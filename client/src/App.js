@@ -6,8 +6,10 @@ import Login from './components/Login';
 import Logout from './components/Logout';
 import Register from './components/Register';
 import Booking from './components/Booking';
-import Driver from './components/Driver';
+import Driver from './components/Driver'; 
 import About from './components/About';
+import Contact from './components/Contact';
+import Reviews from './components/Reviews';
 
 function Home() {
   return (
@@ -15,16 +17,22 @@ function Home() {
       <nav>
         <ul>
           <li>
+            <Link to="/register">Register</Link>
+          </li>
+          <li>
             <Link to="/login">Login</Link>
           </li>
           <li>
             <Link to="/about">About</Link>
           </li>
           <li>
-            <Link to="/register">Register</Link>
+            <Link to="/contact-us">Contact Us</Link>
           </li>
           <li>
-            <Link to="/driver">View All Drivers</Link>
+            <Link to="/reviews">Reviews</Link>
+          </li>
+          <li>
+            <Link to="/driver">Driver</Link>
           </li>
         </ul>
       </nav>
@@ -40,12 +48,13 @@ function App() {
   return (
     <Router>
       <Routes>
-        
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/driver" element={<Driver />} />
+        <Route path="/contact-us" element={<Contact />} />
+        <Route path="/reviews" element={<Reviews />} />
+        <Route path="/driver" element={<Driver />} /> 
       </Routes>
     </Router>
   );

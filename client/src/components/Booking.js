@@ -71,17 +71,19 @@ function Booking() {
   };
 
   return (
-    <div>
+    <div className="booking-container">
       {!ride ? (
-        <button onClick={handleBooking}>Book a Ride</button>
+        <button className="booking-button" onClick={handleBooking}>Book a Ride</button>
       ) : (
         <>
-          <button onClick={handleCancel}>Cancel Ride</button>
-          <button onClick={handlePayment}>Pay for Ride</button>
-          <button onClick={handleRating}>Rate Driver</button>
-          <p>Price: {price}</p>
-          {rating && <p>Rating: {rating}</p>}
-          {comment && <p>Comment: {comment}</p>}
+          <button className="booking-button" onClick={handleCancel}>Cancel Ride</button>
+          <button className="booking-button" onClick={handlePayment}>Pay for Ride</button>
+          <button className="booking-button" onClick={handleRating}>Rate Driver</button>
+          <div className="booking-info">
+            <p>Price: {price}</p>
+            {rating && <p>Rating: {rating}</p>}
+            {comment && <p>Comment: {comment}</p>}
+          </div>
         </>
       )}
     </div>
