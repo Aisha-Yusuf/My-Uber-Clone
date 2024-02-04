@@ -10,6 +10,8 @@ import Driver from './components/Driver';
 import About from './components/About';
 import Contact from './components/Contact';
 import Reviews from './components/Reviews';
+import ReviewForm from './components/ReviewForm';
+import ParentComponent from './components/ParentComponent'
 
 function Home() {
   return (
@@ -40,6 +42,8 @@ function Home() {
       <Header />
       <Logout />
       <Booking />
+      <ReviewForm customer_id={1} driver_id={1} />
+      <ParentComponent />
     </div>
   );
 }
